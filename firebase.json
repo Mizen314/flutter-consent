@@ -1,0 +1,25 @@
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "sext-app",
+          "appId": "1:448101294701:android:5d2329eea01fcc76911564",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "sext-app",
+          "configurations": {
+            "android": "1:448101294701:android:5d2329eea01fcc76911564",
+            "ios": "1:448101294701:ios:67272e077a5b8e08911564",
+            "macos": "1:448101294701:ios:67272e077a5b8e08911564",
+            "web": "1:448101294701:web:653cc36638506c27911564",
+            "windows": "1:448101294701:web:7b6b1d061cbabd23911564"
+          }
+        }
+      }
+    }
+  }
+}
