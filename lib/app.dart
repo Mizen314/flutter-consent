@@ -1,3 +1,5 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:another_flushbar/flushbar.dart';
@@ -22,7 +24,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  //cambiar el tipo
   bool _adStorage = true;
   bool _adUserData = true;
   bool _analyticsStorage = true;
@@ -34,6 +35,7 @@ class _MyHomePageState extends State<MyHomePage> {
     _loadToggleValues();
   }
 
+  // Cargar seleccion del usuario (persistencia en dispositivo)
   void _loadToggleValues() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
@@ -46,11 +48,13 @@ class _MyHomePageState extends State<MyHomePage> {
     _setPreviousConsent();
   }
 
+  // Guardar consentimiento
   void _saveToggleValue(String key, bool value) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setBool(key, value);
   }
 
+  // Implementar consentimiento como funcion de Firebase
   void _setPreviousConsent() {
     FirebaseAnalytics.instance.setConsent(adStorageConsentGranted: _adStorage);
     FirebaseAnalytics.instance
@@ -72,10 +76,37 @@ class _MyHomePageState extends State<MyHomePage> {
     _saveToggleValue('adPersonalizationSignals', _adPersonalizationSignals);
   }
 
+
+//incorporado evento de login - Success
+  void declararLoginExitoso() async {
+    await FirebaseAnalytics.instance.logEvent(
+        name: "login",
+        parameters: {"method": "AppJubilados", "login": "successful"});
+  }
+
+// incorporando evento de login - Denied
+  void declararLoginFallido() {
+    FirebaseAnalytics.instance.logEvent(
+        name: "login",
+        parameters: {
+          "method": "AppJubilados", 
+          "login": "denied"
+          });
+  }
+
+// incorportando logScreen
+void logScreen (){
+  FirebaseAnalytics.instance.logScreenView(
+    screenClass: "LOGIN", 
+    screenName: "LOGIN_bio"
+  );
+}
+
+
   void _showConsentBanner(BuildContext context) {
     Flushbar(
-      flushbarPosition: FlushbarPosition.TOP,
-      margin: const EdgeInsets.symmetric(vertical: 200, horizontal: 30),
+      flushbarPosition: FlushbarPosition.BOTTOM,
+      margin: const EdgeInsets.all(10.0),
       borderRadius: BorderRadius.circular(10),
       backgroundColor: Colors.blueGrey,
       titleText: const Text(
@@ -155,30 +186,26 @@ class _MyHomePageState extends State<MyHomePage> {
                   children: [
                     TextButton(
                       onPressed: () {
-                        // Acción para el primer botón
-                        print('Botón Aceptar presionado');
-                        rechazarTodos();
                         FirebaseAnalytics.instance.logEvent(
                             name: "click",
-                            parameters: {"click_detail": "Aceptar Todos"});
+                            parameters: {"click_detail": "Aceptar Seleccion"});
                         Navigator.of(context).pop();
                       },
                       child: const Text(
-                        'Rechazar Todo',
+                        'Aceptar Selección',
                         style: TextStyle(color: Colors.white),
                       ),
                     ),
                     TextButton(
                       onPressed: () {
-                        // Acción para el segundo botón
-                        print('Aceptar selección');
+                        rechazarTodos();
                         FirebaseAnalytics.instance.logEvent(
                             name: "click",
-                            parameters: {"click_detail": "Aceptar seleccion"});
+                            parameters: {"click_detail": "Rechazar Todos"});
                         Navigator.of(context).pop();
                       },
                       child: const Text(
-                        'Aceptar Seleccion',
+                        'Rechazar Todo',
                         style: TextStyle(color: Colors.white),
                       ),
                     ),
@@ -197,18 +224,48 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Banner de Consentimiento'),
-      ),
-      body: Center(
-        child: ElevatedButton(
-          onPressed: () => [
-            _showConsentBanner(context),
-            FirebaseAnalytics.instance.logEvent(name: 'click', parameters: {
-              "click_detail": "mostrar banner de consentimiento"
-            })
-          ],
-          child: const Text('Mostrar Banner de Consentimiento'),
+        title: const Text('Hola Emmanuel!'),
+        leading: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Image.network(
+            'https://imgs.search.brave.com/KCaHGF__tKutnV_Gs_YQYg_m0sDfryFuGMCmKJD9vto/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly91cGxv/YWQud2lraW1lZGlh/Lm9yZy93aWtpcGVk/aWEvY29tbW9ucy9i/L2IyL1N1cGVydmll/bGxlX2xvZ28xNC5w/bmc', // URL de la imagen
+            fit: BoxFit.contain, // Ajusta la imagen al tamaño disponible
+          ),
         ),
+      ),
+      body: Column(
+        children: [
+          Expanded(
+            child: PageView(
+              children: [
+                Image.network(
+                  'https://content-us-7.content-cms.com/8ba19f21-9a97-4525-8886-f54d823a5cea/dxresources/ddec/ddecff1a-f799-4bf8-9cde-7fd74a48efae.png?resize=411px%3A229px&crop=411%3A216%3B0%2C7',
+                  fit: BoxFit.cover,
+                ),
+                Image.network(
+                  'https://content-us-7.content-cms.com/8ba19f21-9a97-4525-8886-f54d823a5cea/dxresources/9717/9717cd29-928d-4d33-bd99-d27286d7ae5d.jpg?resize=411px%3A229px&crop=411%3A216%3B0%2C7',
+                  fit: BoxFit.cover,
+                ),
+                Image.network(
+                  'https://content-us-7.content-cms.com/8ba19f21-9a97-4525-8886-f54d823a5cea/dxresources/d562/d5625fdb-08d6-4760-b745-f66bd4310ba5.gif',
+                  fit: BoxFit.cover,
+                ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: ElevatedButton(
+              onPressed: () => [
+                _showConsentBanner(context),
+                FirebaseAnalytics.instance.logEvent(name: 'click', parameters: {
+                  "click_detail": "mostrar banner de consentimiento"
+                })
+              ],
+              child: const Text('Mostrar Banner de Consentimiento'),
+            ),
+          ),
+        ],
       ),
     );
   }
